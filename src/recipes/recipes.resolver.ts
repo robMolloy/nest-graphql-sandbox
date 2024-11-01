@@ -8,11 +8,11 @@ import { RecipesService } from './recipes.service';
 
 const pubSub = new PubSub();
 
-@Resolver(of => Recipe)
+@Resolver(() => Recipe)
 export class RecipesResolver {
   constructor(private readonly recipesService: RecipesService) {}
 
-  @Query(returns => Recipe)
+  @Query(() => Recipe)
   async recipe(@Args('id') id: string): Promise<Recipe> {
     const recipe = await this.recipesService.findOneById(id);
     if (!recipe) {
@@ -21,12 +21,42 @@ export class RecipesResolver {
     return recipe;
   }
 
-  @Query(returns => [Recipe])
-  recipes(@Args() recipesArgs: RecipesArgs): Promise<Recipe[]> {
-    return this.recipesService.findAll(recipesArgs);
+  @Query(() => [Recipe])
+  async recipes(@Args() recipesArgs: RecipesArgs): Promise<Recipe[]> {
+    // return this.recipesService.findAll(recipesArgs);
+    const delay = async (x: number) => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(true), x);
+      });
+    };
+    await delay(1000);
+    console.log(`recipes.resolver.ts:${/*LL*/ 34}`, { recipesArgs });
+    return [
+      {
+        id: 'id1',
+        title: ':',
+        description: ':',
+        creationDate: new Date(),
+        ingredients: ['apples', 'pears'],
+      },
+      {
+        id: 'id2',
+        title: ':',
+        description: ':',
+        creationDate: new Date(),
+        ingredients: ['apples', 'pears'],
+      },
+      {
+        id: 'id3',
+        title: ':',
+        description: ':',
+        creationDate: new Date(),
+        ingredients: ['apples', 'pears'],
+      },
+    ];
   }
 
-  @Mutation(returns => Recipe)
+  @Mutation(() => Recipe)
   async addRecipe(
     @Args('newRecipeData') newRecipeData: NewRecipeInput,
   ): Promise<Recipe> {
@@ -35,12 +65,12 @@ export class RecipesResolver {
     return recipe;
   }
 
-  @Mutation(returns => Boolean)
+  @Mutation(() => Boolean)
   async removeRecipe(@Args('id') id: string) {
     return this.recipesService.remove(id);
   }
 
-  @Subscription(returns => Recipe)
+  @Subscription(() => Recipe)
   recipeAdded() {
     return pubSub.asyncIterator('recipeAdded');
   }
