@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Recipe } from './recipe.model';
+import { createRecipeDtoSchema, Recipe, recipeSchema } from './recipe.model';
+import { z } from 'zod';
 
 type TRecipe = Recipe;
 const allRecipes: Recipe[] = [
@@ -25,6 +26,17 @@ export class RecipesService {
 
   create(recipe: TRecipe) {
     allRecipes.push(recipe);
+  }
+  createFromUnknownData(data: unknown) {
+    const parsed = createRecipeDtoSchema.safeParse(data);
+    if (!parsed.success) return parsed;
+
+    const newRecipeData: z.infer<typeof recipeSchema> = {
+      ...parsed.data,
+      creationDate: new Date(),
+    };
+    this.create(newRecipeData);
+    return { data: newRecipeData, success: true } as const;
   }
 
   getAllRecipes() {

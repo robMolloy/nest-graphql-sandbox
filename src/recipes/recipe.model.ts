@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { z } from 'zod';
 
 @ObjectType({ description: 'recipe' })
 export class Recipe {
@@ -17,3 +18,15 @@ export class Recipe {
   @Field(() => [String])
   ingredients: string[];
 }
+
+export const recipeSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  creationDate: z.date(),
+  ingredients: z.array(z.string()),
+});
+
+export const createRecipeDtoSchema = recipeSchema.omit({
+  creationDate: true,
+});
