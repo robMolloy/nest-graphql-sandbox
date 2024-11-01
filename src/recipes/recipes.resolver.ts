@@ -29,31 +29,17 @@ export class RecipesResolver {
         setTimeout(() => resolve(true), x);
       });
     };
-    await delay(1000);
-    console.log(`recipes.resolver.ts:${/*LL*/ 34}`, { recipesArgs });
-    return [
-      {
-        id: 'id1',
-        title: ':',
-        description: ':',
-        creationDate: new Date(),
-        ingredients: ['apples', 'pears'],
-      },
-      {
-        id: 'id2',
-        title: ':',
-        description: ':',
-        creationDate: new Date(),
-        ingredients: ['apples', 'pears'],
-      },
-      {
-        id: 'id3',
-        title: ':',
-        description: ':',
-        creationDate: new Date(),
-        ingredients: ['apples', 'pears'],
-      },
-    ];
+    await delay(250);
+    const recipe = {
+      id: 'id1',
+      title: ':',
+      description: ':',
+      creationDate: new Date(),
+      ingredients: ['apples', 'pears'],
+    };
+    return [...Array(50)]
+      .map((_, j) => ({ ...recipe, id: `id_${j + 1}` }))
+      .slice(recipesArgs.skip, recipesArgs.take);
   }
 
   @Mutation(() => Recipe)
